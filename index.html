@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <form action="" id="config-mesh">
+      <select name="figure" id="select-figure">
+        <option value="BoxGeometry">Куб</option>
+        <option value="SphereGeometry">Сфера</option>
+        <option value="OctahedronGeometry">Пирамида</option>
+      </select>
+      <input type="number" name="scale" />
+      <input type="submit" value="Создать" class="create-btn" />
+    </form>
+    <ul id="uuid-fields"></ul>
+    <script src="scripts/libs/three.min.js"></script>
+
+    <script  src="scripts/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  overflow: hidden;
+}
+#config-mesh {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+/* #select-scale {
+  position: absolute;
+  top: 0;
+  left: 100px;
+} */
+#uuid-fields {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+#uuid-fields li{
+  background-color: #fff;
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.delete-mesh {
+  display: inline-block;
+  border-radius: 50%;
+  border: 2px solid #000;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  margin-left: 10px;
+  cursor: pointer;
+  font-weight: bold;
+   
+}
