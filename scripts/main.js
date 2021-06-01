@@ -15,15 +15,17 @@ window.addEventListener('load', () => {
 
   let camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 5000)
   camera.position.set(0, 0, 1000)
-  let light = new THREE.AmbientLight(0xffffff, 0.4)
+ 
+  let light = new THREE.SpotLight()
+  light.position.set(-300,300,0)
+  light.receiveShadow = true
   scene.add(light)
-  // const controls = new OrbitControls( camera, renderer.domElement );
-  // controls.update()
+
   createBtn.addEventListener('click', (e) => {
     e.preventDefault()
     scene.add(createMesh(takeValueFromForm()))
   })
-
+  
   function loop() {
     renderer.render(scene, camera)
     requestAnimationFrame(function () {
@@ -44,6 +46,7 @@ window.addEventListener('load', () => {
     mesh.position.set(...randomPosition())
     mesh.rotation.x = randomPosition()[0]
     mesh.rotation.y = randomPosition()[0]
+    mesh.castShadow = true
     renderUuid(mesh.uuid)
     removeMesh()
 
@@ -67,8 +70,6 @@ window.addEventListener('load', () => {
   }
   function remove(uuid) {
     const object = scene.getObjectByProperty('uuid', uuid)
-    // object.geometry.dispose()
-    // object.material.dispose()
     scene.remove(object)
   }
   function renderUuid(uuid) {
