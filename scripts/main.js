@@ -1,31 +1,40 @@
+import { OrbitControls } from './libs/OrbitControls.js'
 
 window.addEventListener('load', () => {
-  let width = window.innerWidth
-  let height = window.innerHeight
-  let canvas = document.getElementById('canvas')
   let createBtn = document.querySelector('.create-btn')
+  let obj
 
-  canvas.setAttribute('width', width)
-  canvas.setAttribute('height', height)
-
-  let renderer = new THREE.WebGLRenderer({ canvas: canvas })
+  const renderer = new THREE.WebGLRenderer()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  document.body.appendChild(renderer.domElement)
   renderer.setClearColor(0xdedede)
 
   let scene = new THREE.Scene()
 
-  let camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 5000)
+  let camera = new THREE.PerspectiveCamera(
+    45,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    2000
+  )
   camera.position.set(0, 0, 1000)
- 
-  let light = new THREE.SpotLight()
-  light.position.set(-300,300,0)
-  light.receiveShadow = true
-  scene.add(light)
+
+  const controls = new OrbitControls(camera, renderer.domElement)
+  controls.update()
+
+  const dirLight = new THREE.DirectionalLight(0xffffff, 2.0)
+  dirLight.position.set(0, 0, 1000).normalize()
+  scene.add(dirLight)
+
+  const pointLight = new THREE.PointLight(0xffffff, 1.5)
+  pointLight.position.set(0, 0, 1000)
+  scene.add(pointLight)
 
   createBtn.addEventListener('click', (e) => {
     e.preventDefault()
     scene.add(createMesh(takeValueFromForm()))
   })
-  
+
   function loop() {
     renderer.render(scene, camera)
     requestAnimationFrame(function () {
@@ -35,22 +44,23 @@ window.addEventListener('load', () => {
   loop()
 
   function createMesh(data) {
-    if(!data.scale) return false
+    if (!data.scale) return false
     let newGeometry = new THREE[data.geometry](1)
-    let material = new THREE.MeshBasicMaterial({
+
+    const material = new THREE.MeshPhongMaterial({
       color: 0x000000,
-      wireframe: false,
+      side: THREE.DoubleSide,
     })
-    let mesh = new THREE.Mesh(newGeometry, material)
-    mesh.scale.set(data.scale, data.scale, data.scale)
-    mesh.position.set(...randomPosition())
-    mesh.rotation.x = randomPosition()[0]
-    mesh.rotation.y = randomPosition()[0]
-    mesh.castShadow = true
-    renderUuid(mesh.uuid)
+    obj = new THREE.Mesh(newGeometry, material)
+    obj.scale.set(data.scale, data.scale, data.scale)
+    obj.position.set(0, 0, 100)
+    obj.position.set(...randomPosition())
+    obj.rotation.set(...randomPosition())
+
+    renderUuid(obj.uuid)
     removeMesh()
 
-    return mesh
+    return obj
   }
   function takeValueFromForm() {
     const form = document.querySelector('#config-mesh')
@@ -61,10 +71,11 @@ window.addEventListener('load', () => {
     }
   }
   function randomPosition() {
-    let width = window.innerWidth
-    let height = window.innerHeight
-    let x = Math.floor(Math.random() * width - 200)
-    let y = Math.floor(Math.random() * height - 200)
+    let width = window.innerWidth / 2
+    let height = window.innerHeight / 2
+
+    let x = randomInteger(-width, width)
+    let y = randomInteger(-height, height)
     let z = Math.floor(Math.random() * 100)
     return [x, y, z]
   }
@@ -76,6 +87,10 @@ window.addEventListener('load', () => {
     let uuidFields = document.getElementById('uuid-fields')
     let id = `<li>${uuid}<span class='delete-mesh' data-uuid = ${uuid}>&times;</span></li>`
     uuidFields.insertAdjacentHTML('beforeend', id)
+  }
+  function randomInteger(min, max) {
+    let rand = min - 0.5 + Math.random() * (max - min + 1)
+    return Math.round(rand)
   }
   function removeMesh() {
     let uuidFields = document.getElementById('uuid-fields')
